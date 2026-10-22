@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nền Tảng Ký Hợp Đồng Thuê Nhà Trực Tuyến - Form 1 Victoria</title>
-  <meta name="description" content="Nền tảng xem và ký hợp đồng thuê nhà trực tuyến Form 1 Victoria dành cho Rental Provider 1 và Renter 1. Tải về khi cả hai bên đã ký." />
+  <title>Online Rental Agreement Signing - Form 1 Victoria</title>
+  <meta name="description" content="Online signing platform for Victoria Form 1 Residential Rental Agreement. Allows Rental Provider 1 and Renter 1 to review and sign, with instant download once both parties complete." />
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
       </div>
       <div class="header-titles">
         <div class="header-tag">Victoria Residential Tenancies Act 1997 &bull; Form 1</div>
-        <h1 class="header-main-title">Hợp Đồng Thuê Nhà: 5 Mannix St, Warrnambool VIC 3280</h1>
+        <h1 class="header-main-title">Rental Agreement: 5 Mannix St, Warrnambool VIC 3280</h1>
       </div>
     </div>
 
@@ -36,14 +36,14 @@
           <span class="pill-dot waiting"></span>
           <span class="pill-role">Rental Provider 1:</span>
           <span class="pill-name">Duc Teo Ngo</span>
-          <span class="pill-status" id="headerProviderStatus">Chưa ký</span>
+          <span class="pill-status" id="headerProviderStatus">Not signed</span>
         </div>
 
         <div class="signer-pill" id="headerRenterPill">
           <span class="pill-dot waiting"></span>
           <span class="pill-role">Renter 1:</span>
           <span class="pill-name">SAMSUL I TALKUDER</span>
-          <span class="pill-status" id="headerRenterStatus">Chưa ký</span>
+          <span class="pill-status" id="headerRenterStatus">Not signed</span>
         </div>
 
         <div class="workflow-badge waiting" id="headerWorkflowBadge">
@@ -51,7 +51,7 @@
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
           </svg>
-          <span id="headerWorkflowText">Đang chờ 2 bên ký (0/2)</span>
+          <span id="headerWorkflowText">Awaiting signatures (0 of 2)</span>
         </div>
       </div>
     </div>
@@ -64,42 +64,42 @@
       <!-- Viewer Toolbar -->
       <div class="viewer-toolbar">
         <div class="toolbar-group">
-          <button class="tool-btn" id="btnToggleThumbs" title="Hiện danh sách trang">
+          <button class="tool-btn" id="btnToggleThumbs" title="Toggle page thumbnails">
             <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect width="7" height="7" x="3" y="3" rx="1"/>
               <rect width="7" height="7" x="14" y="3" rx="1"/>
               <rect width="7" height="7" x="14" y="14" rx="1"/>
               <rect width="7" height="7" x="3" y="14" rx="1"/>
             </svg>
-            <span>Mục lục (10 trang)</span>
+            <span>Pages (10)</span>
           </button>
 
           <div class="quick-nav-pills">
-            <button class="quick-btn" id="btnJumpP1" title="Xem thông tin các bên và địa chỉ">Trang 1: Các bên</button>
-            <button class="quick-btn" id="btnJumpP6" title="Xem quyền & nghĩa vụ">Trang 6: Quyền & nghĩa vụ</button>
-            <button class="quick-btn highlight" id="btnJumpP9" title="Tới trang ký tên">
+            <button class="quick-btn" id="btnJumpP1" title="Go to parties and property details">Page 1: Parties</button>
+            <button class="quick-btn" id="btnJumpP6" title="Go to rights and obligations">Page 6: Terms</button>
+            <button class="quick-btn highlight" id="btnJumpP9" title="Go to signature section">
               <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
               </svg>
-              <span>Trang 9: Ký tên</span>
+              <span>Page 9: Signatures</span>
             </button>
           </div>
         </div>
 
         <div class="toolbar-group page-controls">
-          <button class="tool-btn icon-only" id="btnPrevPage" title="Trang trước">
+          <button class="tool-btn icon-only" id="btnPrevPage" title="Previous page">
             <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
           
           <div class="page-display">
-            <span>Trang</span>
+            <span>Page</span>
             <input type="number" id="pageNumberInput" min="1" max="10" value="1" />
             <span>/ 10</span>
           </div>
 
-          <button class="tool-btn icon-only" id="btnNextPage" title="Trang tiếp">
+          <button class="tool-btn icon-only" id="btnNextPage" title="Next page">
             <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="toolbar-group zoom-controls">
-          <button class="tool-btn icon-only" id="btnZoomOut" title="Thu nhỏ">
+          <button class="tool-btn icon-only" id="btnZoomOut" title="Zoom out">
             <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -115,7 +115,7 @@
             </svg>
           </button>
           <span class="zoom-level" id="zoomLevelText">100%</span>
-          <button class="tool-btn icon-only" id="btnZoomIn" title="Phóng to">
+          <button class="tool-btn icon-only" id="btnZoomIn" title="Zoom in">
             <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -123,7 +123,7 @@
               <line x1="8" y1="11" x2="14" y2="11"/>
             </svg>
           </button>
-          <button class="tool-btn" id="btnFitWidth" title="Vừa chiều ngang">Vừa màn hình</button>
+          <button class="tool-btn" id="btnFitWidth" title="Fit width">Fit Width</button>
         </div>
       </div>
 
@@ -132,7 +132,7 @@
         <!-- Thumbnails Sidebar (Toggleable) -->
         <aside class="thumbs-sidebar" id="thumbsSidebar">
           <div class="thumbs-header">
-            <h3>Danh sách trang (10)</h3>
+            <h3>Document Pages (10)</h3>
             <button class="btn-close-sm" id="btnCloseThumbs">&times;</button>
           </div>
           <div class="thumbs-list" id="thumbsList">
@@ -144,7 +144,7 @@
         <div class="doc-stage" id="docStage">
           <div class="page-viewport-wrapper" id="pageViewportWrapper">
             <!-- High-Res Page Image -->
-            <img id="mainPageImg" src="pages/page_1.png" alt="Trang tài liệu" />
+            <img id="mainPageImg" src="pages/page_1.png" alt="Document page" />
 
             <!-- Page 9 Signature Interactive Overlays -->
             <div class="page9-overlay" id="page9Overlay" style="display: none;">
@@ -156,7 +156,7 @@
                     <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                     </svg>
-                    <span>Bấm vào đây để ký (Rental Provider 1)</span>
+                    <span>Click here to sign (Rental Provider 1)</span>
                   </div>
                 </div>
               </div>
@@ -169,7 +169,7 @@
                     <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                     </svg>
-                    <span>Bấm vào đây để ký (Renter 1)</span>
+                    <span>Click here to sign (Renter 1)</span>
                   </div>
                 </div>
               </div>
@@ -181,13 +181,13 @@
 
     <!-- RIGHT: Signing Workspace & Download Gate -->
     <section class="signing-panel">
-      <!-- Signer Selection Tabs -->
+      <!-- Step 1: Signer Selection -->
       <div class="panel-card signer-selection-card">
         <div class="card-header">
-          <span class="card-step-badge">Bước 1</span>
+          <span class="card-step-badge">Step 1</span>
           <div>
-            <h2 class="card-title">Chọn bên thực hiện ký</h2>
-            <p class="card-subtitle">Chuyển đổi giữa 2 bên để lần lượt hoàn tất cả 2 chữ ký</p>
+            <h2 class="card-title">Select Who Is Signing</h2>
+            <p class="card-subtitle">Both parties must sign before the agreement can be downloaded</p>
           </div>
         </div>
 
@@ -195,8 +195,8 @@
           <!-- Rental Provider 1 Button -->
           <button class="signer-card-btn active" id="btnSelectProvider">
             <div class="signer-card-top">
-              <span class="signer-role-tag provider-role">Chủ nhà</span>
-              <span class="signature-status-pill pending" id="providerStatusBadge">Chưa ký</span>
+              <span class="signer-role-tag provider-role">Landlord / Provider</span>
+              <span class="signature-status-pill pending" id="providerStatusBadge">Not signed</span>
             </div>
             <div class="signer-name">Duc Teo Ngo</div>
             <div class="signer-meta">Rental Provider 1 &bull; hoanghonlen211@gmail.com</div>
@@ -205,8 +205,8 @@
           <!-- Renter 1 Button -->
           <button class="signer-card-btn" id="btnSelectRenter">
             <div class="signer-card-top">
-              <span class="signer-role-tag renter-role">Người thuê</span>
-              <span class="signature-status-pill pending" id="renterStatusBadge">Chưa ký</span>
+              <span class="signer-role-tag renter-role">Tenant / Renter</span>
+              <span class="signature-status-pill pending" id="renterStatusBadge">Not signed</span>
             </div>
             <div class="signer-name">SAMSUL I TALKUDER</div>
             <div class="signer-meta">Renter 1 &bull; 0476620057</div>
@@ -214,15 +214,15 @@
         </div>
       </div>
 
-      <!-- Signature Studio -->
+      <!-- Step 2: Signature Studio -->
       <div class="panel-card signature-studio-card">
         <div class="card-header">
-          <span class="card-step-badge">Bước 2</span>
+          <span class="card-step-badge">Step 2</span>
           <div>
             <h2 class="card-title">
-              Tạo chữ ký cho <span class="active-signer-highlight" id="activeSignerLabel">Rental Provider 1 (Duc Teo Ngo)</span>
+              Sign as <span class="active-signer-highlight" id="activeSignerLabel">Rental Provider 1 (Duc Teo Ngo)</span>
             </h2>
-            <p class="card-subtitle">Chọn phương thức ký: Vẽ tay, Nhập họ tên hoặc Tải file ảnh</p>
+            <p class="card-subtitle">Choose your preferred method: Draw, Type, or Upload</p>
           </div>
         </div>
 
@@ -235,7 +235,7 @@
               <path d="M2 2l7.586 7.586"/>
               <circle cx="11" cy="11" r="2"/>
             </svg>
-            <span>Vẽ tay</span>
+            <span>Draw</span>
           </button>
 
           <button class="mode-tab" data-mode="type" id="tabType">
@@ -244,7 +244,7 @@
               <line x1="9" y1="20" x2="15" y2="20"/>
               <line x1="12" y1="4" x2="12" y2="20"/>
             </svg>
-            <span>Gõ tên thư pháp</span>
+            <span>Type Name</span>
           </button>
 
           <button class="mode-tab" data-mode="upload" id="tabUpload">
@@ -253,7 +253,7 @@
               <polyline points="17 8 12 3 7 8"/>
               <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
-            <span>Tải ảnh lên</span>
+            <span>Upload Image</span>
           </button>
         </div>
 
@@ -261,19 +261,19 @@
         <div class="mode-content-pane active" id="paneDraw">
           <div class="canvas-wrapper">
             <canvas id="signatureCanvas" width="560" height="200"></canvas>
-            <div class="canvas-watermark">Ký tại đây bằng chuột hoặc cảm ứng</div>
+            <div class="canvas-watermark">Sign here using mouse or touch</div>
           </div>
 
           <div class="canvas-tools">
             <div class="tool-settings">
-              <span class="tool-label">Màu mực:</span>
+              <span class="tool-label">Ink:</span>
               <div class="color-options">
-                <button class="color-dot active" data-color="#0f172a" style="background: #0f172a;" title="Đen truyền thống"></button>
-                <button class="color-dot" data-color="#1e3a8a" style="background: #1e3a8a;" title="Xanh dương đậm"></button>
-                <button class="color-dot" data-color="#1e293b" style="background: #1e293b;" title="Xanh navy"></button>
+                <button class="color-dot active" data-color="#0f172a" style="background: #0f172a;" title="Classic Black"></button>
+                <button class="color-dot" data-color="#1e3a8a" style="background: #1e3a8a;" title="Royal Blue"></button>
+                <button class="color-dot" data-color="#1e293b" style="background: #1e293b;" title="Navy Ink"></button>
               </div>
 
-              <span class="tool-label" style="margin-left: 12px;">Độ dày:</span>
+              <span class="tool-label" style="margin-left: 12px;">Thickness:</span>
               <input type="range" id="penWidthRange" min="2" max="6" value="3" class="stroke-slider" />
             </div>
 
@@ -283,7 +283,7 @@
                   <path d="M3 7v6h6"/>
                   <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
                 </svg>
-                <span>Hoàn tác</span>
+                <span>Undo</span>
               </button>
               <button class="btn-secondary-sm" id="btnClearCanvas">
                 <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -291,7 +291,7 @@
                   <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
                   <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
                 </svg>
-                <span>Xóa trắng</span>
+                <span>Clear</span>
               </button>
             </div>
           </div>
@@ -300,29 +300,29 @@
         <!-- Mode Content: TYPE -->
         <div class="mode-content-pane" id="paneType">
           <div class="type-input-group">
-            <label for="typeInputText" class="form-label">Nhập tên đầy đủ hiển thị chữ ký:</label>
-            <input type="text" id="typeInputText" class="styled-input" placeholder="Ví dụ: Duc Teo Ngo" value="Duc Teo Ngo" />
+            <label for="typeInputText" class="form-label">Type full name for signature:</label>
+            <input type="text" id="typeInputText" class="styled-input" placeholder="e.g. Duc Teo Ngo" value="Duc Teo Ngo" />
           </div>
 
           <div class="font-styles-grid">
             <div class="font-card active" data-font="Dancing Script">
               <div class="font-preview style-dancing" id="fontPreviewDancing">Duc Teo Ngo</div>
-              <span class="font-name">Dancing Script (Mềm mại)</span>
+              <span class="font-name">Dancing Script (Casual)</span>
             </div>
 
             <div class="font-card" data-font="Great Vibes">
               <div class="font-preview style-greatvibes" id="fontPreviewGreatVibes">Duc Teo Ngo</div>
-              <span class="font-name">Great Vibes (Thư pháp cổ điển)</span>
+              <span class="font-name">Great Vibes (Classic Calligraphy)</span>
             </div>
 
             <div class="font-card" data-font="Caveat">
               <div class="font-preview style-caveat" id="fontPreviewCaveat">Duc Teo Ngo</div>
-              <span class="font-name">Caveat (Tự nhiên)</span>
+              <span class="font-name">Caveat (Natural Hand)</span>
             </div>
 
             <div class="font-card" data-font="Sacramento">
               <div class="font-preview style-sacramento" id="fontPreviewSacramento">Duc Teo Ngo</div>
-              <span class="font-name">Sacramento (Trang nhã)</span>
+              <span class="font-name">Sacramento (Formal)</span>
             </div>
           </div>
         </div>
@@ -336,15 +336,15 @@
               <polyline points="17 8 12 3 7 8"/>
               <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
-            <div class="upload-text-main">Kéo thả ảnh chữ ký vào đây hoặc bấm để chọn</div>
-            <div class="upload-text-sub">Hỗ trợ PNG, JPG (Hệ thống tự động xóa nền trắng & làm nét mực)</div>
+            <div class="upload-text-main">Drop signature image here or click to browse</div>
+            <div class="upload-text-sub">PNG or JPG &bull; Background is automatically removed and ink sharpened</div>
           </div>
 
           <div class="upload-preview-area" id="uploadPreviewArea" style="display: none;">
             <div class="upload-preview-box">
-              <img id="uploadPreviewImg" alt="Xem trước ảnh tải lên" />
+              <img id="uploadPreviewImg" alt="Uploaded signature preview" />
             </div>
-            <button class="btn-secondary-sm" id="btnRemoveUpload">Chọn ảnh khác</button>
+            <button class="btn-secondary-sm" id="btnRemoveUpload">Choose another file</button>
           </div>
         </div>
 
@@ -357,8 +357,8 @@
             </svg>
           </div>
           <div class="notice-text">
-            <strong>Bảo đảm chuẩn khung tỷ lệ (Không tràn viền):</strong>
-            <span>Chữ ký sẽ được tự động crop bỏ viền trống, căn giữa và co dãn chuẩn xác 100% nằm gọn bên trong ô quy định trên Trang 9 của hợp đồng.</span>
+            <strong>Signature Fit Guarantee (No Overflow):</strong>
+            <span>Your signature will be auto-trimmed, proportion-locked, and placed neatly inside the designated box on Page 9 with safe padding.</span>
           </div>
         </div>
 
@@ -367,21 +367,21 @@
           <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="m5 12 5 5L20 7"/>
           </svg>
-          <span id="btnApplyText">Áp dụng chữ ký cho Rental Provider 1</span>
+          <span id="btnApplyText">Apply Signature for Rental Provider 1</span>
         </button>
       </div>
 
-      <!-- Download Gate & Finalization Section -->
+      <!-- Step 3: Download Gate & Finalization -->
       <div class="panel-card download-gate-card" id="downloadGateCard">
         <div class="card-header">
-          <span class="card-step-badge">Bước 3</span>
+          <span class="card-step-badge">Step 3</span>
           <div>
-            <h2 class="card-title">Xác thực & Tải hợp đồng</h2>
-            <p class="card-subtitle">Chỉ mở khóa tải về khi cả 2 bên đã đồng thời ký xong</p>
+            <h2 class="card-title">Verify & Download</h2>
+            <p class="card-subtitle">Download unlocks automatically once both parties have signed</p>
           </div>
         </div>
 
-        <!-- LOCKED VIEW (When 0/2 or 1/2 signed) -->
+        <!-- LOCKED VIEW (When 0 of 2 or 1 of 2 signed) -->
         <div class="download-locked-view" id="downloadLockedView">
           <div class="lock-shield-banner">
             <div class="lock-icon-wrap">
@@ -391,9 +391,9 @@
               </svg>
             </div>
             <div class="lock-banner-info">
-              <h3 class="lock-title">Tải về hiện đang bị khóa</h3>
+              <h3 class="lock-title">Download Currently Locked</h3>
               <p class="lock-desc">
-                Quy định bảo mật: Cả <strong>Rental Provider 1</strong> và <strong>Renter 1</strong> bắt buộc phải đồng thời hoàn tất chữ ký hợp lệ thì mới có thể điền email và tải hợp đồng về máy.
+                Both <strong>Rental Provider 1</strong> and <strong>Renter 1</strong> must complete their signatures before the agreement can be downloaded.
               </p>
             </div>
           </div>
@@ -406,9 +406,9 @@
               </div>
               <div class="check-info">
                 <span class="check-label">Rental Provider 1: <strong>Duc Teo Ngo</strong></span>
-                <span class="check-state" id="checkStateProvider">Chưa ký (Chờ thực hiện)</span>
+                <span class="check-state" id="checkStateProvider">Not signed (Pending)</span>
               </div>
-              <button class="btn-check-action" id="btnGoSignProvider">Ký ngay</button>
+              <button class="btn-check-action" id="btnGoSignProvider">Sign Now</button>
             </div>
 
             <div class="check-item" id="checkItemRenter">
@@ -417,17 +417,17 @@
               </div>
               <div class="check-info">
                 <span class="check-label">Renter 1: <strong>SAMSUL I TALKUDER</strong></span>
-                <span class="check-state" id="checkStateRenter">Chưa ký (Chờ thực hiện)</span>
+                <span class="check-state" id="checkStateRenter">Not signed (Pending)</span>
               </div>
-              <button class="btn-check-action" id="btnGoSignRenter">Ký ngay</button>
+              <button class="btn-check-action" id="btnGoSignRenter">Sign Now</button>
             </div>
           </div>
 
           <!-- Disabled Mock Input -->
           <div class="locked-input-group">
-            <label class="form-label text-muted">Email nhận hợp đồng (Sẽ mở khi đủ 2 chữ ký):</label>
+            <label class="form-label text-muted">Recipient Email (Unlocks once both have signed):</label>
             <div class="locked-input-wrapper">
-              <input type="text" class="styled-input disabled" disabled placeholder="Vui lòng hoàn thành 2 chữ ký ở trên..." />
+              <input type="text" class="styled-input disabled" disabled placeholder="Please complete both signatures above..." />
               <svg class="icon-input-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -446,9 +446,9 @@
               </svg>
             </div>
             <div class="success-banner-info">
-              <h3 class="success-title">Mở khóa thành công! Cả 2 bên đã ký</h3>
+              <h3 class="success-title">Unlocked! Both Parties Have Signed</h3>
               <p class="success-desc">
-                Hợp đồng đã có đủ chữ ký của <strong>Rental Provider 1</strong> và <strong>Renter 1</strong>. Vui lòng nhập địa chỉ email dưới đây để tải về tệp PDF hoàn chỉnh.
+                Signatures from <strong>Rental Provider 1</strong> and <strong>Renter 1</strong> are complete. Enter your email below to download the final executed PDF.
               </p>
             </div>
           </div>
@@ -456,7 +456,7 @@
           <!-- Email Input Field -->
           <div class="email-input-group">
             <label for="downloadEmailInput" class="form-label required">
-              Địa chỉ Email người tải / nhận hợp đồng:
+              Enter your email address to download:
             </label>
             <div class="email-field-wrap">
               <svg class="icon-email-field" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -467,17 +467,17 @@
                 type="email" 
                 id="downloadEmailInput" 
                 class="styled-input email-active" 
-                placeholder="Ví dụ: hoanghonlen211@gmail.com" 
+                placeholder="e.g. hoanghonlen211@gmail.com" 
                 value="hoanghonlen211@gmail.com" 
               />
             </div>
             <div class="email-error-msg" id="emailErrorMsg" style="display: none;">
-              Vui lòng nhập định dạng email hợp lệ (ví dụ: yourname@domain.com).
+              Please enter a valid email address (e.g. name@domain.com).
             </div>
 
             <!-- Fast Suggestion Chips -->
             <div class="email-suggestions">
-              <span class="suggest-label">Gợi ý nhanh:</span>
+              <span class="suggest-label">Quick fill:</span>
               <button class="chip-email" id="chipProviderEmail">hoanghonlen211@gmail.com</button>
               <button class="chip-email" id="chipCustomEmail">samsul.talkuder@gmail.com</button>
             </div>
@@ -491,7 +491,7 @@
                 <polyline points="7 10 12 15 17 10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              <span>Xác nhận Email & Tải về PDF Đã Ký</span>
+              <span>Download Signed PDF</span>
             </button>
 
             <button class="btn-preview-signed" id="btnPreviewSignedPage">
@@ -499,7 +499,7 @@
                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
-              <span>Xem trước Trang 9 đã chèn chữ ký</span>
+              <span>Preview Signed Page 9</span>
             </button>
           </div>
         </div>
@@ -516,18 +516,18 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
-          <h3>Xem trước Trang 9: Hai chữ ký đã đóng dấu</h3>
+          <h3>Preview Page 9: Both Signatures Embedded</h3>
         </div>
         <button class="modal-close-btn" id="btnClosePreviewModal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="modal-img-container">
-          <img id="modalSignedImg" alt="Xem trước trang 9 đã ký" />
+          <img id="modalSignedImg" alt="Preview of signed page 9" />
         </div>
       </div>
       <div class="modal-footer">
-        <span class="modal-note">Chữ ký đã được định vị chính xác và nằm gọn trong ô chỉ định.</span>
-        <button class="btn-secondary-sm" id="btnClosePreviewModal2">Đóng</button>
+        <span class="modal-note">Both signatures are fitted cleanly inside the official form boxes.</span>
+        <button class="btn-secondary-sm" id="btnClosePreviewModal2">Close</button>
       </div>
     </div>
   </div>

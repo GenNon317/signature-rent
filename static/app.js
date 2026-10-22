@@ -294,7 +294,7 @@
      ========================================================================== */
   function handleSignatureUpload(file) {
     if (!file || !file.type.startsWith('image/')) {
-      showToast('Vui lòng chọn tệp hình ảnh hợp lệ (PNG hoặc JPG).', 'error');
+      showToast('Please choose a valid image file (PNG or JPG).', 'error');
       return;
     }
 
@@ -406,7 +406,6 @@
     let rawDataUrl = null;
 
     if (state.activeMode === 'draw') {
-      // Check if user drew anything
       const dpr = window.devicePixelRatio || 1;
       const imgData = ctx.getImageData(0, 0, DOM.signatureCanvas.width / dpr, DOM.signatureCanvas.height / dpr);
       let drawn = false;
@@ -417,7 +416,7 @@
         }
       }
       if (!drawn) {
-        showToast('Vui lòng vẽ chữ ký trước khi áp dụng!', 'error');
+        showToast('Please draw your signature before applying!', 'error');
         return;
       }
       rawDataUrl = DOM.signatureCanvas.toDataURL('image/png');
@@ -426,7 +425,7 @@
       rawDataUrl = renderTypedSignatureToCanvas(text, state.selectedFont);
     } else if (state.activeMode === 'upload') {
       if (!state.uploadedDataUrl) {
-        showToast('Vui lòng tải lên ảnh chữ ký trước khi áp dụng!', 'error');
+        showToast('Please upload a signature image before applying!', 'error');
         return;
       }
       rawDataUrl = state.uploadedDataUrl;
@@ -436,14 +435,14 @@
 
     cropTransparentCanvas(rawDataUrl, (trimmedDataUrl) => {
       if (!trimmedDataUrl) {
-        showToast('Không phát hiện được nét vẽ chữ ký. Vui lòng thử lại!', 'error');
+        showToast('No signature detected. Please try again.', 'error');
         return;
       }
 
       // Store trimmed signature in state
       state.signatures[state.activeSigner] = trimmedDataUrl;
       const signerName = state.signerDetails[state.activeSigner].name;
-      showToast(`Đã áp dụng chữ ký cho ${signerName} thành công!`, 'success');
+      showToast(`Signature applied for ${signerName}.`, 'success');
 
       // Update UI elements
       updateSignerUI();
@@ -456,8 +455,8 @@
         // Switch to the remaining signer
         setTimeout(() => {
           setActiveSigner(otherKey);
-          showToast(`Đã chuyển sang ${state.signerDetails[otherKey].role} (${state.signerDetails[otherKey].name}) để ký tiếp.`, 'info');
-        }, 800);
+          showToast(`Switched to ${state.signerDetails[otherKey].role} (${state.signerDetails[otherKey].name}) to complete the second signature.`, 'info');
+        }, 700);
       } else {
         // Both are signed!
         checkBothSignedTrigger();
@@ -477,7 +476,7 @@
 
       // Jump to page 9 so user can view both signatures
       setPage(9);
-      showToast('Tuyệt vời! Cả 2 bên đã hoàn tất chữ ký. Đã mở khóa tải về!', 'success');
+      showToast('Great! Both parties have signed. Download is now unlocked!', 'success');
     }
   }
 
@@ -515,23 +514,23 @@
 
     DOM.headerProviderPill.classList.toggle('signed', provSigned);
     DOM.headerProviderPill.querySelector('.pill-dot').className = `pill-dot ${provSigned ? 'signed' : 'waiting'}`;
-    DOM.headerProviderStatus.textContent = provSigned ? 'Đã ký ✓' : 'Chưa ký';
+    DOM.headerProviderStatus.textContent = provSigned ? 'Signed ✓' : 'Not signed';
 
     DOM.headerRenterPill.classList.toggle('signed', rentSigned);
     DOM.headerRenterPill.querySelector('.pill-dot').className = `pill-dot ${rentSigned ? 'signed' : 'waiting'}`;
-    DOM.headerRenterStatus.textContent = rentSigned ? 'Đã ký ✓' : 'Chưa ký';
+    DOM.headerRenterStatus.textContent = rentSigned ? 'Signed ✓' : 'Not signed';
 
     // Header Workflow Badge
     const signedCount = (provSigned ? 1 : 0) + (rentSigned ? 1 : 0);
     if (signedCount === 2) {
       DOM.headerWorkflowBadge.className = 'workflow-badge ready';
-      DOM.headerWorkflowText.textContent = 'Hoàn tất đủ 2 chữ ký (2/2) ✓';
+      DOM.headerWorkflowText.textContent = 'All signatures complete (2 of 2) ✓';
     } else if (signedCount === 1) {
       DOM.headerWorkflowBadge.className = 'workflow-badge waiting';
-      DOM.headerWorkflowText.textContent = 'Đã có 1 bên ký (1/2)';
+      DOM.headerWorkflowText.textContent = '1 of 2 signed';
     } else {
       DOM.headerWorkflowBadge.className = 'workflow-badge waiting';
-      DOM.headerWorkflowText.textContent = 'Đang chờ 2 bên ký (0/2)';
+      DOM.headerWorkflowText.textContent = 'Awaiting signatures (0 of 2)';
     }
 
     // Signer Switcher Cards (Step 1)
@@ -539,15 +538,15 @@
     DOM.btnSelectRenter.classList.toggle('active', state.activeSigner === 'renter');
 
     DOM.providerStatusBadge.className = `signature-status-pill ${provSigned ? 'signed' : 'pending'}`;
-    DOM.providerStatusBadge.textContent = provSigned ? 'Đã ký ✓' : 'Chưa ký';
+    DOM.providerStatusBadge.textContent = provSigned ? 'Signed ✓' : 'Not signed';
 
     DOM.renterStatusBadge.className = `signature-status-pill ${rentSigned ? 'signed' : 'pending'}`;
-    DOM.renterStatusBadge.textContent = rentSigned ? 'Đã ký ✓' : 'Chưa ký';
+    DOM.renterStatusBadge.textContent = rentSigned ? 'Signed ✓' : 'Not signed';
 
     // Step 2 Title & Button Text
     const cur = state.signerDetails[state.activeSigner];
     DOM.activeSignerLabel.textContent = `${cur.role} (${cur.name})`;
-    DOM.btnApplyText.textContent = `Áp dụng chữ ký cho ${cur.role}`;
+    DOM.btnApplyText.textContent = `Apply Signature for ${cur.role}`;
 
     // Type input default
     DOM.typeInputText.value = cur.name;
@@ -558,7 +557,7 @@
     // Rental Provider 1 box
     if (state.signatures.provider) {
       DOM.overlayProviderBox.classList.add('signed');
-      DOM.boxProviderContent.innerHTML = `<img src="${state.signatures.provider}" alt="Chữ ký Rental Provider 1" />`;
+      DOM.boxProviderContent.innerHTML = `<img src="${state.signatures.provider}" alt="Rental Provider 1 Signature" />`;
     } else {
       DOM.overlayProviderBox.classList.remove('signed');
       DOM.boxProviderContent.innerHTML = `
@@ -566,14 +565,14 @@
           <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
           </svg>
-          <span>Bấm vào đây để ký (Rental Provider 1)</span>
+          <span>Click here to sign (Rental Provider 1)</span>
         </div>`;
     }
 
     // Renter 1 box
     if (state.signatures.renter) {
       DOM.overlayRenterBox.classList.add('signed');
-      DOM.boxRenterContent.innerHTML = `<img src="${state.signatures.renter}" alt="Chữ ký Renter 1" />`;
+      DOM.boxRenterContent.innerHTML = `<img src="${state.signatures.renter}" alt="Renter 1 Signature" />`;
     } else {
       DOM.overlayRenterBox.classList.remove('signed');
       DOM.boxRenterContent.innerHTML = `
@@ -581,7 +580,7 @@
           <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
           </svg>
-          <span>Bấm vào đây để ký (Renter 1)</span>
+          <span>Click here to sign (Renter 1)</span>
         </div>`;
     }
   }
@@ -593,10 +592,10 @@
 
     // Update Checklist items
     DOM.checkItemProvider.classList.toggle('completed', provSigned);
-    DOM.checkStateProvider.textContent = provSigned ? 'Đã hoàn tất chữ ký ✓' : 'Chưa ký (Chờ thực hiện)';
+    DOM.checkStateProvider.textContent = provSigned ? 'Signature complete ✓' : 'Not signed (Pending)';
 
     DOM.checkItemRenter.classList.toggle('completed', rentSigned);
-    DOM.checkStateRenter.textContent = rentSigned ? 'Đã hoàn tất chữ ký ✓' : 'Chưa ký (Chờ thực hiện)';
+    DOM.checkStateRenter.textContent = rentSigned ? 'Signature complete ✓' : 'Not signed (Pending)';
 
     // Strict Rule: ONLY unlock when BOTH have signed simultaneously
     if (both) {
@@ -687,8 +686,8 @@
       const card = document.createElement('div');
       card.className = `thumb-card ${i === 1 ? 'active' : ''}`;
       card.innerHTML = `
-        <img src="pages/page_${i}.png" loading="lazy" alt="Trang ${i}" />
-        <span class="thumb-number">Trang ${i}${i === 9 ? ' (Ký)' : ''}</span>
+        <img src="pages/page_${i}.png" loading="lazy" alt="Page ${i}" />
+        <span class="thumb-number">Page ${i}${i === 9 ? ' (Sign)' : ''}</span>
       `;
       card.addEventListener('click', () => setPage(i));
       DOM.thumbsList.appendChild(card);
@@ -710,7 +709,7 @@
     DOM.emailErrorMsg.style.display = 'none';
 
     if (!state.signatures.provider || !state.signatures.renter) {
-      showToast('Yêu cầu bắt buộc: Cả 2 bên phải hoàn tất chữ ký trước khi tải về!', 'error');
+      showToast('Both parties must complete their signatures before downloading!', 'error');
       return;
     }
 
@@ -722,7 +721,7 @@
         <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
         <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
       </svg>
-      <span>Đang chèn chữ ký chuẩn xác & tạo PDF...</span>
+      <span>Embedding signatures & generating PDF...</span>
     `;
 
     try {
@@ -741,7 +740,7 @@
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Lỗi xử lý tạo file PDF');
+        throw new Error(errorData.detail || 'Error generating PDF');
       }
 
       const result = await response.json();
@@ -754,13 +753,13 @@
       link.click();
       document.body.removeChild(link);
 
-      showToast(`Tải về thành công! File PDF hoàn chỉnh đã được gửi tới ${email}.`, 'success');
+      showToast(`Download successful! Signed PDF generated for ${email}.`, 'success');
       fireConfetti();
 
       // Set modal preview image
       DOM.modalSignedImg.src = `${result.previewUrl}?t=${Date.now()}`;
     } catch (err) {
-      showToast(err.message || 'Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.', 'error');
+      showToast(err.message || 'An error occurred while generating the PDF. Please try again.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;

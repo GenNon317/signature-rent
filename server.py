@@ -116,20 +116,20 @@ def get_doc_info():
 def sign_document(req: SignRequest):
     # Rule 1: BOTH signatures must be present
     if not req.providerSignature or not req.providerSignature.strip():
-        raise HTTPException(status_code=400, detail="Thiếu chữ ký của Rental Provider 1 (Duc Teo Ngo).")
+        raise HTTPException(status_code=400, detail="Missing signature for Rental Provider 1 (Duc Teo Ngo).")
     if not req.renterSignature or not req.renterSignature.strip():
-        raise HTTPException(status_code=400, detail="Thiếu chữ ký của Renter 1 (SAMSUL I TALKUDER).")
+        raise HTTPException(status_code=400, detail="Missing signature for Renter 1 (SAMSUL I TALKUDER).")
     
     # Rule 2: Email must be provided and valid
     email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     if not req.email or not re.match(email_regex, req.email.strip()):
-        raise HTTPException(status_code=400, detail="Địa chỉ email không hợp lệ. Vui lòng kiểm tra lại.")
+        raise HTTPException(status_code=400, detail="Invalid email address format. Please enter a valid email.")
     
     try:
         provider_img_bytes = decode_base64_image(req.providerSignature)
         renter_img_bytes = decode_base64_image(req.renterSignature)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Lỗi xử lý hình ảnh chữ ký: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error processing signature image: {str(e)}")
 
     doc = pymupdf.open(PDF_PATH)
     page9 = doc[8]
@@ -151,7 +151,7 @@ def sign_document(req: SignRequest):
 
     return {
         "success": True,
-        "message": "Hợp đồng đã được ký hoàn tất bởi cả Rental Provider 1 và Renter 1!",
+        "message": "Agreement successfully signed by both Rental Provider 1 and Renter 1!",
         "email": req.email.strip(),
         "downloadUrl": "/api/download",
         "previewUrl": "/static/signed_page_9.png"
@@ -160,7 +160,7 @@ def sign_document(req: SignRequest):
 @app.get("/api/download")
 def download_signed():
     if not os.path.exists(SIGNED_PDF_PATH):
-        raise HTTPException(status_code=404, detail="Hợp đồng chưa được ký hoặc chưa sẵn sàng tải về.")
+        raise HTTPException(status_code=404, detail="Agreement has not been signed yet or is not ready for download.")
     return FileResponse(
         path=SIGNED_PDF_PATH,
         filename="Form_1_Rental_Agreement_5_Mannix_St_SAMSUL_I_TALKUDER_Signed.pdf",

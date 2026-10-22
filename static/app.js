@@ -477,6 +477,9 @@
       // Jump to page 9 so user can view both signatures
       setPage(9);
       showToast('Great! Both parties have signed. Download is now unlocked!', 'success');
+      setTimeout(() => {
+        DOM.downloadGateCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 400);
     }
   }
 

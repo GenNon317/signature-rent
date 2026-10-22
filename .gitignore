@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Temporary generated artifacts
+test_signed.pdf
+Form_1_Rental_Agreement_Signed.pdf
+static/test_page_9.png
+static/signed_page_9.png
+static/crop_*.png
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store

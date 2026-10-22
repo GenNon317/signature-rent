@@ -767,7 +767,7 @@
   }
 
   function previewSignedPage() {
-    DOM.modalSignedImg.src = `/static/signed_page_9.png?t=${Date.now()}`;
+    DOM.modalSignedImg.src = `/signed_page_9.png?t=${Date.now()}`;
     DOM.previewModal.style.display = 'flex';
   }
 

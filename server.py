@@ -154,7 +154,7 @@ def sign_document(req: SignRequest):
         "message": "Agreement successfully signed by both Rental Provider 1 and Renter 1!",
         "email": req.email.strip(),
         "downloadUrl": "/api/download",
-        "previewUrl": "/static/signed_page_9.png"
+        "previewUrl": "/signed_page_9.png"
     }
 
 @app.get("/api/download")

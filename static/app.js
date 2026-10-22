@@ -1,6 +1,6 @@
 /**
  * Victoria Tenancy e-Sign Platform
- * Interactive Client Logic for Form 1 Rental Agreement
+ * Compact & Responsive Logic (Desktop & Mobile Friendly)
  */
 
 (function () {
@@ -11,37 +11,30 @@
     currentPage: 1,
     totalPages: 10,
     zoom: 1.0,
-    basePageWidth: 780,
+    basePageWidth: 700,
     activeSigner: 'provider', // 'provider' | 'renter'
     activeMode: 'draw', // 'draw' | 'type' | 'upload'
     signatures: {
-      provider: null, // dataURL string
-      renter: null    // dataURL string
+      provider: null,
+      renter: null
     },
     signerDetails: {
       provider: {
-        role: 'Rental Provider 1',
+        role: 'Landlord',
         name: 'Duc Teo Ngo',
-        email: 'hoanghonlen211@gmail.com',
-        phone: '0423789688',
-        address: '9 Fairfax Cct, Albanvale VIC 3021'
+        email: 'hoanghonlen211@gmail.com'
       },
       renter: {
-        role: 'Renter 1',
+        role: 'Tenant',
         name: 'SAMSUL I TALKUDER',
-        email: 'samsul.talkuder@gmail.com',
-        phone: '0476620057',
-        address: '16 Bottlebrush ct, Sunshine West VIC 3020'
+        email: 'samsul.talkuder@gmail.com'
       }
     },
-    // Canvas Drawing State
     isDrawing: false,
     drawColor: '#0f172a',
     drawWidth: 3,
     canvasHistory: [],
-    // Type Mode
     selectedFont: 'Dancing Script',
-    // Upload Mode
     uploadedDataUrl: null,
     bothSigned: false
   };
@@ -55,6 +48,12 @@
     headerRenterStatus: document.getElementById('headerRenterStatus'),
     headerWorkflowBadge: document.getElementById('headerWorkflowBadge'),
     headerWorkflowText: document.getElementById('headerWorkflowText'),
+
+    // Mobile Switcher
+    btnMobileTabSign: document.getElementById('btnMobileTabSign'),
+    btnMobileTabDoc: document.getElementById('btnMobileTabDoc'),
+    docViewerPanel: document.getElementById('docViewerPanel'),
+    signingPanel: document.getElementById('signingPanel'),
 
     // Viewer
     docStage: document.getElementById('docStage'),
@@ -76,66 +75,55 @@
     btnZoomOut: document.getElementById('btnZoomOut'),
     zoomLevelText: document.getElementById('zoomLevelText'),
     btnFitWidth: document.getElementById('btnFitWidth'),
-    btnJumpP1: document.getElementById('btnJumpP1'),
-    btnJumpP6: document.getElementById('btnJumpP6'),
     btnJumpP9: document.getElementById('btnJumpP9'),
 
-    // Step 1: Signer Selection
+    // Step 1: Signer Tabs
     btnSelectProvider: document.getElementById('btnSelectProvider'),
     btnSelectRenter: document.getElementById('btnSelectRenter'),
     providerStatusBadge: document.getElementById('providerStatusBadge'),
     renterStatusBadge: document.getElementById('renterStatusBadge'),
 
-    // Step 2: Signature Studio
+    // Step 2: Signature
     activeSignerLabel: document.getElementById('activeSignerLabel'),
     btnApplySignature: document.getElementById('btnApplySignature'),
     btnApplyText: document.getElementById('btnApplyText'),
-    // Mode tabs
     tabDraw: document.getElementById('tabDraw'),
     tabType: document.getElementById('tabType'),
     tabUpload: document.getElementById('tabUpload'),
     paneDraw: document.getElementById('paneDraw'),
     paneType: document.getElementById('paneType'),
     paneUpload: document.getElementById('paneUpload'),
-    // Draw
     signatureCanvas: document.getElementById('signatureCanvas'),
-    penWidthRange: document.getElementById('penWidthRange'),
     btnUndoCanvas: document.getElementById('btnUndoCanvas'),
     btnClearCanvas: document.getElementById('btnClearCanvas'),
-    colorDots: document.querySelectorAll('.color-dot'),
-    // Type
+    colorDots: document.querySelectorAll('.c-dot'),
     typeInputText: document.getElementById('typeInputText'),
-    fontCards: document.querySelectorAll('.font-card'),
+    fontItems: document.querySelectorAll('.font-item'),
     fontPreviews: {
       'Dancing Script': document.getElementById('fontPreviewDancing'),
       'Great Vibes': document.getElementById('fontPreviewGreatVibes'),
       'Caveat': document.getElementById('fontPreviewCaveat'),
       'Sacramento': document.getElementById('fontPreviewSacramento')
     },
-    // Upload
     uploadDropzone: document.getElementById('uploadDropzone'),
     sigFileInput: document.getElementById('sigFileInput'),
     uploadPreviewArea: document.getElementById('uploadPreviewArea'),
     uploadPreviewImg: document.getElementById('uploadPreviewImg'),
     btnRemoveUpload: document.getElementById('btnRemoveUpload'),
 
-    // Step 3: Download Gate
+    // Step 3: Download
     downloadLockedView: document.getElementById('downloadLockedView'),
     downloadUnlockedView: document.getElementById('downloadUnlockedView'),
     checkItemProvider: document.getElementById('checkItemProvider'),
     checkStateProvider: document.getElementById('checkStateProvider'),
-    btnGoSignProvider: document.getElementById('btnGoSignProvider'),
     checkItemRenter: document.getElementById('checkItemRenter'),
     checkStateRenter: document.getElementById('checkStateRenter'),
-    btnGoSignRenter: document.getElementById('btnGoSignRenter'),
     downloadEmailInput: document.getElementById('downloadEmailInput'),
     emailErrorMsg: document.getElementById('emailErrorMsg'),
-    chipProviderEmail: document.getElementById('chipProviderEmail'),
-    chipCustomEmail: document.getElementById('chipCustomEmail'),
     btnDownloadPDF: document.getElementById('btnDownloadPDF'),
     btnPreviewSignedPage: document.getElementById('btnPreviewSignedPage'),
 
-    // Modal
+    // Modal & Toast
     previewModal: document.getElementById('previewModal'),
     modalSignedImg: document.getElementById('modalSignedImg'),
     btnClosePreviewModal: document.getElementById('btnClosePreviewModal'),
@@ -143,7 +131,6 @@
     toastContainer: document.getElementById('toastContainer')
   };
 
-  // Canvas 2D context
   let ctx = null;
 
   /* ==========================================================================
@@ -157,18 +144,44 @@
     bindEvents();
     updateSignerUI();
     updateDownloadGate();
+    initMobileResponsive();
   }
 
   /* ==========================================================================
-     Canvas Setup & Drawing Handling (Retina Crisp & Smooth Strokes)
+     Mobile Switcher (Default: Sign Tab on mobile)
+     ========================================================================== */
+  function initMobileResponsive() {
+    if (window.innerWidth <= 900) {
+      setMobileView('sign');
+    }
+  }
+
+  function setMobileView(view) {
+    if (view === 'sign') {
+      DOM.btnMobileTabSign?.classList.add('active');
+      DOM.btnMobileTabDoc?.classList.remove('active');
+      DOM.signingPanel.classList.remove('mobile-hidden');
+      DOM.docViewerPanel.classList.add('mobile-hidden');
+    } else {
+      DOM.btnMobileTabDoc?.classList.add('active');
+      DOM.btnMobileTabSign?.classList.remove('active');
+      DOM.docViewerPanel.classList.remove('mobile-hidden');
+      DOM.signingPanel.classList.add('mobile-hidden');
+    }
+  }
+
+  /* ==========================================================================
+     Canvas Setup & Drawing Handling (Smooth Strokes)
      ========================================================================== */
   function initCanvas() {
     const canvas = DOM.signatureCanvas;
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
+    const w = rect.width || 400;
+    const h = rect.height || 125;
 
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
 
     ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
@@ -181,8 +194,8 @@
   function getCanvasPos(e) {
     const canvas = DOM.signatureCanvas;
     const rect = canvas.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+    const clientX = e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+    const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
     return {
       x: clientX - rect.left,
       y: clientY - rect.top
@@ -232,9 +245,7 @@
   function saveCanvasState() {
     const canvas = DOM.signatureCanvas;
     state.canvasHistory.push(canvas.toDataURL());
-    if (state.canvasHistory.length > 25) {
-      state.canvasHistory.shift();
-    }
+    if (state.canvasHistory.length > 20) state.canvasHistory.shift();
   }
 
   function undoCanvas() {
@@ -261,7 +272,7 @@
   }
 
   /* ==========================================================================
-     Type Mode Handling
+     Type & Upload Modes
      ========================================================================== */
   function updateTypePreviews() {
     const text = DOM.typeInputText.value.trim() || state.signerDetails[state.activeSigner].name;
@@ -272,29 +283,26 @@
 
   function renderTypedSignatureToCanvas(text, fontName) {
     const canvas = document.createElement('canvas');
-    canvas.width = 600;
-    canvas.height = 200;
+    canvas.width = 500;
+    canvas.height = 130;
     const c = canvas.getContext('2d');
     c.clearRect(0, 0, canvas.width, canvas.height);
     c.fillStyle = state.drawColor || '#0f172a';
     c.textBaseline = 'middle';
     c.textAlign = 'center';
 
-    let fontSize = 72;
-    if (fontName === 'Sacramento') fontSize = 84;
-    if (fontName === 'Great Vibes') fontSize = 76;
+    let fontSize = 54;
+    if (fontName === 'Sacramento') fontSize = 64;
+    if (fontName === 'Great Vibes') fontSize = 58;
     c.font = `600 ${fontSize}px "${fontName}", cursive`;
 
     c.fillText(text, canvas.width / 2, canvas.height / 2);
     return canvas.toDataURL('image/png');
   }
 
-  /* ==========================================================================
-     Upload Mode Handling & White Background Suppressor
-     ========================================================================== */
   function handleSignatureUpload(file) {
     if (!file || !file.type.startsWith('image/')) {
-      showToast('Please choose a valid image file (PNG or JPG).', 'error');
+      showToast('Please select an image file (PNG / JPG).', 'error');
       return;
     }
 
@@ -302,7 +310,6 @@
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        // Draw to offscreen canvas and suppress white/light backgrounds
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
         canvas.height = img.height;
@@ -312,17 +319,13 @@
         const imgData = c.getImageData(0, 0, canvas.width, canvas.height);
         const data = imgData.data;
 
-        // Convert near-white pixels to transparent and darken signature strokes
+        // Auto remove white background
         for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
+          const r = data[i], g = data[i + 1], b = data[i + 2];
           const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
-
           if (brightness > 215) {
-            data[i + 3] = 0; // Transparent
+            data[i + 3] = 0;
           } else {
-            // Darken ink
             const alpha = 255 - brightness;
             data[i] = Math.min(r, 20);
             data[i + 1] = Math.min(g, 35);
@@ -342,9 +345,6 @@
     reader.readAsDataURL(file);
   }
 
-  /* ==========================================================================
-     Crop Transparent Bounding Box (Client-side Exact Fit Pre-processing)
-     ========================================================================== */
   function cropTransparentCanvas(dataUrl, callback) {
     const img = new Image();
     img.onload = () => {
@@ -362,8 +362,7 @@
       for (let y = 0; y < canvas.height; y++) {
         for (let x = 0; x < canvas.width; x++) {
           const idx = (y * canvas.width + x) * 4;
-          const alpha = data[idx + 3];
-          if (alpha > 20) {
+          if (data[idx + 3] > 20) {
             hasPixels = true;
             if (x < minX) minX = x;
             if (x > maxX) maxX = x;
@@ -378,8 +377,7 @@
         return;
       }
 
-      // Add 4px padding
-      const pad = 4;
+      const pad = 3;
       minX = Math.max(0, minX - pad);
       minY = Math.max(0, minY - pad);
       maxX = Math.min(canvas.width, maxX + pad);
@@ -400,7 +398,7 @@
   }
 
   /* ==========================================================================
-     Applying Signature
+     Apply Signature
      ========================================================================== */
   function applySignature() {
     let rawDataUrl = null;
@@ -410,13 +408,10 @@
       const imgData = ctx.getImageData(0, 0, DOM.signatureCanvas.width / dpr, DOM.signatureCanvas.height / dpr);
       let drawn = false;
       for (let i = 3; i < imgData.data.length; i += 4) {
-        if (imgData.data[i] > 20) {
-          drawn = true;
-          break;
-        }
+        if (imgData.data[i] > 20) { drawn = true; break; }
       }
       if (!drawn) {
-        showToast('Please draw your signature before applying!', 'error');
+        showToast('Please sign before saving.', 'error');
         return;
       }
       rawDataUrl = DOM.signatureCanvas.toDataURL('image/png');
@@ -425,7 +420,7 @@
       rawDataUrl = renderTypedSignatureToCanvas(text, state.selectedFont);
     } else if (state.activeMode === 'upload') {
       if (!state.uploadedDataUrl) {
-        showToast('Please upload a signature image before applying!', 'error');
+        showToast('Please choose an image.', 'error');
         return;
       }
       rawDataUrl = state.uploadedDataUrl;
@@ -435,30 +430,25 @@
 
     cropTransparentCanvas(rawDataUrl, (trimmedDataUrl) => {
       if (!trimmedDataUrl) {
-        showToast('No signature detected. Please try again.', 'error');
+        showToast('No signature detected.', 'error');
         return;
       }
 
-      // Store trimmed signature in state
       state.signatures[state.activeSigner] = trimmedDataUrl;
       const signerName = state.signerDetails[state.activeSigner].name;
-      showToast(`Signature applied for ${signerName}.`, 'success');
+      showToast(`Saved signature for ${signerName} ✓`, 'success');
 
-      // Update UI elements
       updateSignerUI();
       updatePage9Overlays();
       updateDownloadGate();
 
-      // If user signed one, encourage signing the other if not yet done
       const otherKey = state.activeSigner === 'provider' ? 'renter' : 'provider';
       if (!state.signatures[otherKey]) {
-        // Switch to the remaining signer
         setTimeout(() => {
           setActiveSigner(otherKey);
-          showToast(`Switched to ${state.signerDetails[otherKey].role} (${state.signerDetails[otherKey].name}) to complete the second signature.`, 'info');
-        }, 700);
+          showToast(`Now sign for ${state.signerDetails[otherKey].name}`, 'info');
+        }, 500);
       } else {
-        // Both are signed!
         checkBothSignedTrigger();
       }
     });
@@ -471,39 +461,12 @@
       updatePage9Overlays();
       updateDownloadGate();
 
-      // Celebration Confetti
-      fireConfetti();
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      }
 
-      // Jump to page 9 so user can view both signatures
       setPage(9);
-      showToast('Great! Both parties have signed. Download is now unlocked!', 'success');
-      setTimeout(() => {
-        DOM.downloadGateCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 400);
-    }
-  }
-
-  function fireConfetti() {
-    if (typeof confetti === 'function') {
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
-      setTimeout(() => {
-        confetti({
-          particleCount: 60,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 }
-        });
-        confetti({
-          particleCount: 60,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 }
-        });
-      }, 300);
+      showToast('Both signed! Ready to download.', 'success');
     }
   }
 
@@ -511,80 +474,53 @@
      UI Updaters
      ========================================================================== */
   function updateSignerUI() {
-    // Header Pills
     const provSigned = Boolean(state.signatures.provider);
     const rentSigned = Boolean(state.signatures.renter);
 
     DOM.headerProviderPill.classList.toggle('signed', provSigned);
-    DOM.headerProviderPill.querySelector('.pill-dot').className = `pill-dot ${provSigned ? 'signed' : 'waiting'}`;
-    DOM.headerProviderStatus.textContent = provSigned ? 'Signed ✓' : 'Not signed';
+    DOM.headerProviderPill.querySelector('.dot').className = `dot ${provSigned ? 'signed' : 'waiting'}`;
+    DOM.headerProviderStatus.textContent = provSigned ? 'Signed ✓' : 'Pending';
 
     DOM.headerRenterPill.classList.toggle('signed', rentSigned);
-    DOM.headerRenterPill.querySelector('.pill-dot').className = `pill-dot ${rentSigned ? 'signed' : 'waiting'}`;
-    DOM.headerRenterStatus.textContent = rentSigned ? 'Signed ✓' : 'Not signed';
+    DOM.headerRenterPill.querySelector('.dot').className = `dot ${rentSigned ? 'signed' : 'waiting'}`;
+    DOM.headerRenterStatus.textContent = rentSigned ? 'Signed ✓' : 'Pending';
 
-    // Header Workflow Badge
-    const signedCount = (provSigned ? 1 : 0) + (rentSigned ? 1 : 0);
-    if (signedCount === 2) {
-      DOM.headerWorkflowBadge.className = 'workflow-badge ready';
-      DOM.headerWorkflowText.textContent = 'All signatures complete (2 of 2) ✓';
-    } else if (signedCount === 1) {
-      DOM.headerWorkflowBadge.className = 'workflow-badge waiting';
-      DOM.headerWorkflowText.textContent = '1 of 2 signed';
-    } else {
-      DOM.headerWorkflowBadge.className = 'workflow-badge waiting';
-      DOM.headerWorkflowText.textContent = 'Awaiting signatures (0 of 2)';
-    }
+    const count = (provSigned ? 1 : 0) + (rentSigned ? 1 : 0);
+    DOM.headerWorkflowBadge.className = `status-badge ${count === 2 ? 'ready' : 'waiting'}`;
+    DOM.headerWorkflowText.textContent = count === 2 ? '2 of 2 Signed ✓' : `${count} of 2 Signed`;
 
-    // Signer Switcher Cards (Step 1)
     DOM.btnSelectProvider.classList.toggle('active', state.activeSigner === 'provider');
     DOM.btnSelectRenter.classList.toggle('active', state.activeSigner === 'renter');
 
-    DOM.providerStatusBadge.className = `signature-status-pill ${provSigned ? 'signed' : 'pending'}`;
+    DOM.providerStatusBadge.className = `tab-status ${provSigned ? 'signed' : 'pending'}`;
     DOM.providerStatusBadge.textContent = provSigned ? 'Signed ✓' : 'Not signed';
 
-    DOM.renterStatusBadge.className = `signature-status-pill ${rentSigned ? 'signed' : 'pending'}`;
+    DOM.renterStatusBadge.className = `tab-status ${rentSigned ? 'signed' : 'pending'}`;
     DOM.renterStatusBadge.textContent = rentSigned ? 'Signed ✓' : 'Not signed';
 
-    // Step 2 Title & Button Text
     const cur = state.signerDetails[state.activeSigner];
-    DOM.activeSignerLabel.textContent = `${cur.role} (${cur.name})`;
-    DOM.btnApplyText.textContent = `Apply Signature for ${cur.role}`;
+    DOM.activeSignerLabel.textContent = cur.name;
+    DOM.btnApplyText.textContent = `✓ Save Signature for ${cur.name}`;
 
-    // Type input default
     DOM.typeInputText.value = cur.name;
     updateTypePreviews();
   }
 
   function updatePage9Overlays() {
-    // Rental Provider 1 box
     if (state.signatures.provider) {
       DOM.overlayProviderBox.classList.add('signed');
-      DOM.boxProviderContent.innerHTML = `<img src="${state.signatures.provider}" alt="Rental Provider 1 Signature" />`;
+      DOM.boxProviderContent.innerHTML = `<img src="${state.signatures.provider}" alt="Signature" />`;
     } else {
       DOM.overlayProviderBox.classList.remove('signed');
-      DOM.boxProviderContent.innerHTML = `
-        <div class="empty-prompt">
-          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-          </svg>
-          <span>Click here to sign (Rental Provider 1)</span>
-        </div>`;
+      DOM.boxProviderContent.innerHTML = `<div class="empty-prompt">✍️ Click to sign (Duc Teo Ngo)</div>`;
     }
 
-    // Renter 1 box
     if (state.signatures.renter) {
       DOM.overlayRenterBox.classList.add('signed');
-      DOM.boxRenterContent.innerHTML = `<img src="${state.signatures.renter}" alt="Renter 1 Signature" />`;
+      DOM.boxRenterContent.innerHTML = `<img src="${state.signatures.renter}" alt="Signature" />`;
     } else {
       DOM.overlayRenterBox.classList.remove('signed');
-      DOM.boxRenterContent.innerHTML = `
-        <div class="empty-prompt">
-          <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-          </svg>
-          <span>Click here to sign (Renter 1)</span>
-        </div>`;
+      DOM.boxRenterContent.innerHTML = `<div class="empty-prompt">✍️ Click to sign (SAMSUL)</div>`;
     }
   }
 
@@ -593,14 +529,14 @@
     const rentSigned = Boolean(state.signatures.renter);
     const both = provSigned && rentSigned;
 
-    // Update Checklist items
     DOM.checkItemProvider.classList.toggle('completed', provSigned);
-    DOM.checkStateProvider.textContent = provSigned ? 'Signature complete ✓' : 'Not signed (Pending)';
+    DOM.checkItemProvider.querySelector('.chk-icon').textContent = provSigned ? '✓' : '○';
+    DOM.checkStateProvider.textContent = provSigned ? 'Signed ✓' : 'Not signed';
 
     DOM.checkItemRenter.classList.toggle('completed', rentSigned);
-    DOM.checkStateRenter.textContent = rentSigned ? 'Signature complete ✓' : 'Not signed (Pending)';
+    DOM.checkItemRenter.querySelector('.chk-icon').textContent = rentSigned ? '✓' : '○';
+    DOM.checkStateRenter.textContent = rentSigned ? 'Signed ✓' : 'Not signed';
 
-    // Strict Rule: ONLY unlock when BOTH have signed simultaneously
     if (both) {
       DOM.downloadLockedView.style.display = 'none';
       DOM.downloadUnlockedView.style.display = 'block';
@@ -614,6 +550,7 @@
     state.activeSigner = signerKey;
     clearCanvas();
     updateSignerUI();
+    if (window.innerWidth <= 900) setMobileView('sign');
   }
 
   function setMode(mode) {
@@ -626,13 +563,11 @@
     DOM.paneType.classList.toggle('active', mode === 'type');
     DOM.paneUpload.classList.toggle('active', mode === 'upload');
 
-    if (mode === 'draw') {
-      setTimeout(initCanvas, 50);
-    }
+    if (mode === 'draw') setTimeout(initCanvas, 50);
   }
 
   /* ==========================================================================
-     Document Viewer Navigation & Zoom
+     Viewer Navigation
      ========================================================================== */
   function setPage(pageNum) {
     if (pageNum < 1) pageNum = 1;
@@ -641,17 +576,13 @@
     state.currentPage = pageNum;
     DOM.mainPageImg.src = `pages/page_${pageNum}.png`;
     DOM.pageNumberInput.value = pageNum;
-
-    // Show overlays only on Page 9
     DOM.page9Overlay.style.display = pageNum === 9 ? 'block' : 'none';
 
-    // Highlight thumbnail
     const thumbCards = DOM.thumbsList.querySelectorAll('.thumb-card');
     thumbCards.forEach((card, idx) => {
       card.classList.toggle('active', idx + 1 === pageNum);
     });
 
-    // Scroll to top of stage
     DOM.docStage.scrollTop = 0;
   }
 
@@ -662,8 +593,8 @@
   }
 
   function zoomIn() {
-    if (state.zoom < 2.0) {
-      state.zoom = Math.min(2.0, state.zoom + 0.15);
+    if (state.zoom < 1.8) {
+      state.zoom = Math.min(1.8, state.zoom + 0.15);
       updateZoom();
     }
   }
@@ -677,7 +608,7 @@
 
   function fitWidth() {
     const containerW = DOM.docStage.clientWidth - 40;
-    if (containerW > 300) {
+    if (containerW > 250) {
       state.zoom = containerW / state.basePageWidth;
       updateZoom();
     }
@@ -690,7 +621,7 @@
       card.className = `thumb-card ${i === 1 ? 'active' : ''}`;
       card.innerHTML = `
         <img src="pages/page_${i}.png" loading="lazy" alt="Page ${i}" />
-        <span class="thumb-number">Page ${i}${i === 9 ? ' (Sign)' : ''}</span>
+        <span class="thumb-number">${i}</span>
       `;
       card.addEventListener('click', () => setPage(i));
       DOM.thumbsList.appendChild(card);
@@ -698,7 +629,7 @@
   }
 
   /* ==========================================================================
-     Download PDF Execution
+     Download PDF
      ========================================================================== */
   async function handleDownloadPDF() {
     const email = DOM.downloadEmailInput.value.trim();
@@ -712,20 +643,14 @@
     DOM.emailErrorMsg.style.display = 'none';
 
     if (!state.signatures.provider || !state.signatures.renter) {
-      showToast('Both parties must complete their signatures before downloading!', 'error');
+      showToast('Both parties must sign.', 'error');
       return;
     }
 
     const btn = DOM.btnDownloadPDF;
     const originalText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = `
-      <svg class="icon-download-btn spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
-        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
-      </svg>
-      <span>Embedding signatures & generating PDF...</span>
-    `;
+    btn.innerHTML = `<span>Generating PDF...</span>`;
 
     try {
       const payload = {
@@ -748,7 +673,6 @@
 
       const result = await response.json();
 
-      // Trigger actual download of the signed PDF
       const link = document.createElement('a');
       link.href = result.downloadUrl;
       link.download = 'Form_1_Rental_Agreement_5_Mannix_St_SAMSUL_I_TALKUDER_Signed.pdf';
@@ -756,13 +680,10 @@
       link.click();
       document.body.removeChild(link);
 
-      showToast(`Download successful! Signed PDF generated for ${email}.`, 'success');
-      fireConfetti();
-
-      // Set modal preview image
+      showToast(`Downloaded successfully!`, 'success');
       DOM.modalSignedImg.src = `${result.previewUrl}?t=${Date.now()}`;
     } catch (err) {
-      showToast(err.message || 'An error occurred while generating the PDF. Please try again.', 'error');
+      showToast(err.message || 'Error creating PDF.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
@@ -774,9 +695,6 @@
     DOM.previewModal.style.display = 'flex';
   }
 
-  /* ==========================================================================
-     Toast Notifications
-     ========================================================================== */
   function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
@@ -787,31 +705,35 @@
     setTimeout(() => {
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 300);
-    }, 4000);
+    }, 3000);
   }
 
   /* ==========================================================================
-     Event Bindings
+     Events
      ========================================================================== */
   function bindEvents() {
+    // Mobile tabs
+    DOM.btnMobileTabSign?.addEventListener('click', () => setMobileView('sign'));
+    DOM.btnMobileTabDoc?.addEventListener('click', () => setMobileView('doc'));
+
     // Navigation
     DOM.btnPrevPage.addEventListener('click', () => setPage(state.currentPage - 1));
     DOM.btnNextPage.addEventListener('click', () => setPage(state.currentPage + 1));
     DOM.pageNumberInput.addEventListener('change', (e) => setPage(parseInt(e.target.value, 10) || 1));
-    DOM.btnJumpP1.addEventListener('click', () => setPage(1));
-    DOM.btnJumpP6.addEventListener('click', () => setPage(6));
-    DOM.btnJumpP9.addEventListener('click', () => setPage(9));
+    DOM.btnJumpP9.addEventListener('click', () => {
+      setPage(9);
+      if (window.innerWidth <= 900) setMobileView('doc');
+    });
 
     // Zoom
     DOM.btnZoomIn.addEventListener('click', zoomIn);
     DOM.btnZoomOut.addEventListener('click', zoomOut);
     DOM.btnFitWidth.addEventListener('click', fitWidth);
 
-    // Thumbnails toggle
     DOM.btnToggleThumbs.addEventListener('click', () => DOM.thumbsSidebar.classList.toggle('collapsed'));
     DOM.btnCloseThumbs.addEventListener('click', () => DOM.thumbsSidebar.classList.add('collapsed'));
 
-    // Step 1: Signer selection
+    // Signer select
     DOM.btnSelectProvider.addEventListener('click', () => setActiveSigner('provider'));
     DOM.btnSelectRenter.addEventListener('click', () => setActiveSigner('renter'));
 
@@ -820,7 +742,7 @@
     DOM.tabType.addEventListener('click', () => setMode('type'));
     DOM.tabUpload.addEventListener('click', () => setMode('upload'));
 
-    // Canvas Draw Events
+    // Canvas
     const canvas = DOM.signatureCanvas;
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', drawMove);
@@ -834,10 +756,6 @@
     DOM.btnUndoCanvas.addEventListener('click', undoCanvas);
     DOM.btnClearCanvas.addEventListener('click', clearCanvas);
 
-    DOM.penWidthRange.addEventListener('input', (e) => {
-      state.drawWidth = parseInt(e.target.value, 10);
-    });
-
     DOM.colorDots.forEach((dot) => {
       dot.addEventListener('click', () => {
         DOM.colorDots.forEach((d) => d.classList.remove('active'));
@@ -846,37 +764,20 @@
       });
     });
 
-    // Type mode font card selection
+    // Type mode
     DOM.typeInputText.addEventListener('input', updateTypePreviews);
-    DOM.fontCards.forEach((card) => {
+    DOM.fontItems.forEach((card) => {
       card.addEventListener('click', () => {
-        DOM.fontCards.forEach((c) => c.classList.remove('active'));
+        DOM.fontItems.forEach((c) => c.classList.remove('active'));
         card.classList.add('active');
         state.selectedFont = card.getAttribute('data-font');
       });
     });
 
-    // Upload mode events
+    // Upload mode
     DOM.uploadDropzone.addEventListener('click', () => DOM.sigFileInput.click());
     DOM.sigFileInput.addEventListener('change', (e) => {
-      if (e.target.files && e.target.files[0]) {
-        handleSignatureUpload(e.target.files[0]);
-      }
-    });
-
-    DOM.uploadDropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      DOM.uploadDropzone.style.borderColor = 'var(--accent-primary)';
-    });
-    DOM.uploadDropzone.addEventListener('dragleave', () => {
-      DOM.uploadDropzone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-    });
-    DOM.uploadDropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      DOM.uploadDropzone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        handleSignatureUpload(e.dataTransfer.files[0]);
-      }
+      if (e.target.files && e.target.files[0]) handleSignatureUpload(e.target.files[0]);
     });
 
     DOM.btnRemoveUpload.addEventListener('click', () => {
@@ -886,55 +787,31 @@
       DOM.uploadPreviewArea.style.display = 'none';
     });
 
-    // Apply Signature
     DOM.btnApplySignature.addEventListener('click', applySignature);
 
-    // Overlay Box Clicks on Page 9
-    DOM.overlayProviderBox.addEventListener('click', () => {
-      setActiveSigner('provider');
-      DOM.paneDraw.scrollIntoView({ behavior: 'smooth' });
-    });
-    DOM.overlayRenterBox.addEventListener('click', () => {
-      setActiveSigner('renter');
-      DOM.paneDraw.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Checklist Action Buttons
-    DOM.btnGoSignProvider.addEventListener('click', () => {
-      setActiveSigner('provider');
-      setPage(9);
-    });
-    DOM.btnGoSignRenter.addEventListener('click', () => {
-      setActiveSigner('renter');
-      setPage(9);
-    });
-
-    // Email chips
-    DOM.chipProviderEmail.addEventListener('click', () => {
-      DOM.downloadEmailInput.value = DOM.chipProviderEmail.textContent.trim();
-    });
-    DOM.chipCustomEmail.addEventListener('click', () => {
-      DOM.downloadEmailInput.value = DOM.chipCustomEmail.textContent.trim();
-    });
+    // Overlay clicks on Page 9
+    DOM.overlayProviderBox.addEventListener('click', () => setActiveSigner('provider'));
+    DOM.overlayRenterBox.addEventListener('click', () => setActiveSigner('renter'));
 
     // Download & Preview
     DOM.btnDownloadPDF.addEventListener('click', handleDownloadPDF);
     DOM.btnPreviewSignedPage.addEventListener('click', previewSignedPage);
 
-    // Modal
     DOM.btnClosePreviewModal.addEventListener('click', () => DOM.previewModal.style.display = 'none');
     DOM.btnClosePreviewModal2.addEventListener('click', () => DOM.previewModal.style.display = 'none');
     DOM.previewModal.addEventListener('click', (e) => {
       if (e.target === DOM.previewModal) DOM.previewModal.style.display = 'none';
     });
 
-    // Window resize
     window.addEventListener('resize', () => {
       if (state.activeMode === 'draw') initCanvas();
+      if (window.innerWidth > 900) {
+        DOM.docViewerPanel.classList.remove('mobile-hidden');
+        DOM.signingPanel.classList.remove('mobile-hidden');
+      }
     });
   }
 
-  // Start app on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
